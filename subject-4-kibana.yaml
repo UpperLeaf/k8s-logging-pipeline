@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: subject-4-kibana
+  name: subject-4-kibana
+spec:
+  containers:
+  - image: docker.elastic.co/kibana/kibana:7.14.1
+    name: subject-4-kibana
+    env:
+    - name: ELASTICSEARCH_HOSTS
+      valueFrom: 
+        configMapKeyRef:
+          name: es-config
+          key: ELASTICSEARCH_HOSTS
+        
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: subject-4-kibana
+  name: subject-4-kibana
+spec:
+  type: NodePort
+  ports:
+  - port: 5601
+    protocol: TCP
+    targetPort: 5601
+  selector:
+    run: subject-4-kibana
+status:
+  loadBalancer: {}
